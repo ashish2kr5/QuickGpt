@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+
+
+
+/* @custom-variant dark(&:where(.dark, .dark *));    */
+
+*{
+  font-family: "Outfit", sans-serif;
+}
+
+@theme{
+  --color-primary:#E6CCFF;
+}
+
+
+ ::-webkit-scrollbar {
+ display:none;
+}  
+
+.reset-tw :not(pre):not(code)
+{
+  all: revert;
+}
+
+@keyframes waveBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  60% {
+    transform: translateY(-8px);
+  }
+}
+
+.loader div {
+  animation: waveBounce 1.2s ease-in-out infinite;
+}
+
+.loader div:nth-child(1){
+  animation-delay: 0s;
+}
+
+.loader div:nth-child(2){
+  animation-delay: 0.2s;
+}
+
+.loader div:nth-child(3){
+  animation-delay: 0.4s;
+}
+
+
