@@ -1,17 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { dummyPlans } from '../assets/assets'
 import Loading from './Loading'
+import useAppContext from '../context/AppContext'
+import toast from 'react-hot-toast'
 
 const Credits = () => {
 
   const [plans,setPlans] = useState([])
   const [loading, setLoading] =useState(true)
-
+  const {token,axios } = useAppContext()
 
   const fetchPlans = async () =>{
-    setPlans(dummyPlans)
-    setLoading(false)
+    try {
+      const {data} = await axios.get('/api/credit/plan',{headers:{Authorization: token}})
+      if(data.success) {
+        setPlans(data.plans)
+      }
+    } catch (error) {
+      console.error("Error fetching plans:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
+  const purchasePlan = async(planId) => {
+    try {
+      const {data} = await axios.post('/api/credit/purchase',{planId},{headers:{Authorization: token}})
+      if(data.success) { 
+        window.location.href = data.url 
+      }
+      else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   useEffect(()=>{
@@ -31,7 +53,7 @@ const Credits = () => {
             <div className='flex-1'>
 
               <h3 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>{plan.name}</h3>
-              <p className='text-2xl font-bold text-purple-600 dark:text-purple-300 mb-4'>${plan.price}
+              <p className='text-2xl font-bold text-purple-600 dark:text-purple-300 mb-4'>₹{plan.price}
                 <span className='text-base font-normal text-gray-600 dark:text-purple-200'>{' '}/ {plan.credits} credits</span>
               </p>
              <ul className='list-disc list-inside text-sm text-gray-700 dark:text-purple-200 space-y-1'>
@@ -42,7 +64,7 @@ const Credits = () => {
   ))}
 </ul>
               </div>
-              <button className="mt-4 bg-purple-600 dark:bg-purple-500 text-white px-5 py-2 rounded-lg font-medium hover:bg-purple-700 dark:hover:bg-purple-600 transition duration-300">
+              <button onClick={()=>purchasePlan(plan._id)} className="mt-4 bg-purple-600 dark:bg-purple-500 text-white px-5 py-2 rounded-lg font-medium hover:bg-purple-700 dark:hover:bg-purple-600 transition duration-300">
   Buy Now
 </button>
           </div>

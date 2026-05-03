@@ -9,6 +9,8 @@ import './assets/prism.css'
 import { assets } from './assets/assets';
 import Loading from './pages/Loading'
 import Login from './pages/Login'
+import {Toaster} from 'react-hot-toast'
+
 
 const App = () => {
   // const { theme } = useAppContext();
@@ -22,7 +24,7 @@ const App = () => {
   // }, [theme]);
 
 
-  const {user} = useAppContext()
+  const {user,loadingUser} = useAppContext()
 
   const { theme } = useAppContext();
 
@@ -35,10 +37,12 @@ const App = () => {
   const {pathname} = useLocation()
 
 
-  if(pathname === '/loading') return <Loading />
+  if(pathname === '/loading' || loadingUser) return <Loading />
 
   return (
     <>
+    <Toaster />
+
     {!isMenuopen && <img src={assets.menu_icon} alt="" className='absolute top-3 left-3 w-8 h-8 cursor-pointer md:hidden not-dark:invert' onClick={()=>setIsMenuOpen(true)} />
     }
 
