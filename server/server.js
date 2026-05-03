@@ -16,7 +16,7 @@ const app = express()
 await connectDB()
 
 //middleware
-
+app.set('trust proxy', 1)
 //stripe webhook
 
 
