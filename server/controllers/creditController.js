@@ -1,5 +1,6 @@
 import Transaction from "../models/Transaction.js";
 import Stripe from "stripe"
+import UserModel from "../models/UserModel.js";
 
 const plans = [
    {
@@ -27,7 +28,7 @@ const plans = [
 
 
 //api conoleer for getting all plans
-export const getPlans = async(req,res)=>{
+  export const getPlans = async(req,res)=>{
     try{
         res.json({success:true,plans}) 
     }catch(error){
@@ -78,9 +79,35 @@ export const getPlans = async(req,res)=>{
       metadata:{transactionId: transaction._id.toString(),appId:"quickgpt"},
       expires_at:Math.floor(Date.now()/1000) + 31*60, //31 minutes expiry
     });
+    // console.log(session);
+    
+    const transactions = await Transaction.findById(transaction._id.toString());
+    console.log("Transaction:", transaction);
+    
+    if(!transactions) {
+      console.error("Transaction not found:", transactionId);
+      // return res.json({received:true})
+    }
 
+    if(transactions.isPaid) {
+      console.log("Transaction already paid");
+      // return res.json({received:true})
+    }
 
-    res.json({success:true,url:session.url})
+    console.log("Updating user:", transactions.userId, "with credits:", transactions.credits);
+    
+    // Update user credits
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      transactions.userId,
+      {$inc: {credits: transactions.credits}},
+      {new: true}
+    );
+    
+    console.log("User updated. New credits:", updatedUser?.credits);
+
+    res.json({success:true,url:session.url});
+    
+
     }catch(error){
         res.json({success:false,message:error.message})
     } 

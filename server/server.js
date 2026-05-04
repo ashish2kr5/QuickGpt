@@ -17,12 +17,27 @@ await connectDB()
 
 //middleware
 app.set('trust proxy', 1)
-//stripe webhook
 
+// Logging middleware FIRST
+app.use((req,res,next)=>{
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+})
 
-app.post('/api/stripe',express.raw({type:'application/json'}),stripeWebhooks)
+// Stripe webhook BEFORE json parser (needs raw body)
+app.post('/api/stripe', express.raw({type:'application/json'}), stripeWebhooks)
 
+// Test webhook endpoint
+app.get('/api/stripe', (req, res) => {
+  res.json({
+    status: 'Webhook endpoint is ready',
+    method: 'POST /api/stripe',
+    body_type: 'raw JSON',
+    timestamp: new Date().toISOString()
+  })
+})
 
+// CORS and JSON parser AFTER webhook
 app.use(cors())
 
 app.use(express.json())
@@ -41,8 +56,8 @@ app.use('/api/credit',creditRouter)
 const PORT = process.env.PORT || 3000
 
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running at: http://localhost:${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running at: http://localhost:${PORT}`);
+});
 
-export default app
+// export default app
