@@ -107,6 +107,7 @@ export const stripeWebhooks = async (req, res) => {
         }
 
         const transaction = await Transaction.findById(transactionId);
+        
 
         if (!transaction || transaction.isPaid) {
           return res.json({ received: true });
