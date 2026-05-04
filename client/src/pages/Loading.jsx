@@ -91,7 +91,8 @@ const Loading = () => {
       
       <div className='flex flex-col items-center gap-4'>
         <div className='w-10 h-10 rounded-full border-4 border-white border-t-transparent animate-spin'></div>
-        <p>Processing Payment...</p>
+        
+        <p>Loading...</p>
       </div>
 
     </div>
