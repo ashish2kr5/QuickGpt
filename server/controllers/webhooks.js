@@ -131,4 +131,5 @@ export const stripeWebhooks = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ error: "Webhook failed" });
   }
+   
 };
